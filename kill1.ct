@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="38">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>3</ID>
+      <Description>"kill ayarları"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+//code from here to '[DISABLE]' will be used to enable the cheat
+alloc(newmem,2048)
+label(returnhere)
+label(originalcode)
+label(exit)
+label(killcount)
+label(_10k_rate)
+label(_20k_rate)
+label(_30k_rate)
+label(_40k_rate)
+newmem: //this is allocated memory, you have read,write,execute access
+cmp dword [edi+148],(int)10000 // 10K ve altı
+jl _10k_rate
+cmp dword [edi+148],(int)20000 // 10K - 20K
+jl _20k_rate
+cmp dword [edi+148],(int)30000 // 20K - 30K
+jl _30k_rate
+cmp dword [edi+148],(int)1000000 // 30K Sonrası
+jl _40k_rate
+
+originalcode:
+cmp dword ptr [edi+0000597C],00
+jmp exit
+
+killcount:
+cmp dword ptr [edi+0000597C],00
+JE ps_game.exe+67db4
+add eax,1 // infaz tasi ile
+jmp ps_game.exe+67db4
+
+_10k_rate:
+add eax,(int)4
+jmp killcount
+
+_20k_rate:
+add eax,(int)3
+jmp killcount
+
+_30k_rate:
+add eax,(int)2
+jmp killcount
+
+_40k_rate:
+add eax,(int)1
+jmp killcount
+
+exit:
+jmp returnhere
+
+"ps_game.exe"+67DA5:
+jmp newmem
+nop
+nop
+returnhere:
+
+
+ 
+ 
+[DISABLE]
+//code from here till the end of the code will be used to disable the cheat
+dealloc(newmem)
+"ps_game.exe"+67DA5:
+cmp dword ptr [edi+0000597C],00
+//Alt: db 83 BF 7C 59 00 00 00
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
