@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="38">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"boss buff"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+alloc(newmem,2048)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem:
+cmp ebx,00 // HP do mob/boss
+jne originalcode
+
+cmp dword ptr [ebp+2A4],#835 // mob/boss ID
+jne originalcode
+
+cmp [edi+17F4],00
+je buff_solo
+
+push eax
+push ebx
+push edx
+mov edx,[edi+17F4]
+mov eax,[edx+10]
+mov ebx,00
+
+push ecx
+push edx
+mov ecx,8
+mul ecx
+pop edx
+pop ecx
+
+start_raid_loop:
+cmp ebx,eax
+jge end_raid_loop
+
+pushad
+mov edi,[edx+ebx+18]
+call func_send_buff
+popad
+
+add ebx,08
+jmp start_raid_loop
+
+end_raid_loop:
+pop edx
+pop ebx
+pop eax
+
+originalcode:
+mov [ebp+000002A8],ebx
+
+exit:
+jmp returnhere
+
+buff_solo:
+pushad
+call func_send_buff
+popad
+jmp originalcode
+
+func_send_buff:
+//mov edi,[edx+ebx+18]
+mov edx,#1 // Skill Level
+mov eax,#465 // Skill ID
+call 0041BB30
+call 004725B0
+ret
+
+"ps_game.exe"+A19DF:
+jmp newmem
+nop
+returnhere:
+
+[DISABLE]
+dealloc(newmem)
+"ps_game.exe"+A19DF:
+mov [ebp+000002A8],ebx
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
